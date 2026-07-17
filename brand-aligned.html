@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Third Eye — An interactive guide to hypnotherapy</title>
+<style>
+:root{
+  --paper:#fdf8f2; --ink:#f6ece4; --rose:#c48a80; --rose-soft:#e8c4ba;
+  --scrim:rgba(30,22,20,.46); --deep:#26201c;
+}
+*{box-sizing:border-box; margin:0}
+html,body{height:100%}
+body{font-family:'Outfit',Helvetica,sans-serif; font-weight:300; color:var(--ink); background:#1a1216; overflow:hidden}
+a{color:inherit; text-decoration:none}
+.serif{font-family:'Instrument Serif',Georgia,serif; font-weight:400}
+
+#sky{position:fixed; inset:0; width:100%; height:100%; display:block; z-index:0}
+.grain{position:fixed; inset:0; pointer-events:none; opacity:.5; mix-blend-mode:overlay; z-index:1;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.18'/%3E%3C/svg%3E")}
+
+.app{position:relative; z-index:2; height:100%; height:100dvh; display:flex; flex-direction:column}
+.top{display:flex; align-items:center; justify-content:center; gap:.5rem; padding:1.1rem 1rem .9rem; font-size:.72rem; letter-spacing:.22em; text-transform:uppercase}
+
+.screens{flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:0 1.2rem 1rem}
+.screen{display:none; max-width:520px; margin:0 auto; animation:fade .5s ease}
+.screen.active{display:block}
+@keyframes fade{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+
+.tabs{display:flex; justify-content:space-around; padding:.6rem .4rem calc(.7rem + env(safe-area-inset-bottom)); background:rgba(24,16,14,.72); backdrop-filter:blur(12px); border-top:1px solid rgba(246,236,228,.14)}
+.tab{background:none; border:none; color:var(--ink); opacity:.55; font-family:inherit; font-size:.6rem; letter-spacing:.08em; text-transform:uppercase; display:flex; flex-direction:column; align-items:center; gap:.3rem; cursor:pointer; padding:.2rem .5rem}
+.tab svg{width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round}
+.tab.active{opacity:1; color:var(--rose-soft)}
+
+h1.big{font-size:clamp(1.9rem,7vw,2.6rem); font-style:italic; line-height:1.1; text-align:center; margin:.5rem 0 .8rem; text-shadow:0 2px 24px rgba(0,0,0,.35)}
+p.lead{text-align:center; font-size:.92rem; font-weight:200; line-height:1.6; opacity:.92; max-width:40ch; margin:0 auto 1.4rem}
+.eyebrow{font-size:.66rem; letter-spacing:.26em; text-transform:uppercase; color:var(--rose-soft); text-align:center; margin-bottom:.8rem}
+
+.panel{background:var(--scrim); backdrop-filter:blur(10px); border:1px solid rgba(246,236,228,.18); border-radius:16px; padding:1.1rem 1.3rem 1.2rem; margin-bottom:1rem}
+.row1{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:.6rem}
+.phase{font-family:'Instrument Serif',serif; font-style:italic; font-size:1.25rem}
+.hint{font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; opacity:.65}
+input[type=range]{width:100%; appearance:none; -webkit-appearance:none; height:26px; background:transparent; cursor:grab; direction:rtl}
+input[type=range]::-webkit-slider-runnable-track{height:2px; background:rgba(246,236,228,.35); border-radius:2px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:#f9d9a8; border:2px solid rgba(255,255,255,.7); margin-top:-8px; box-shadow:0 0 14px rgba(249,217,168,.8)}
+input[type=range]::-moz-range-track{height:2px; background:rgba(246,236,228,.35)}
+input[type=range]::-moz-range-thumb{width:18px; height:18px; border-radius:50%; background:#f9d9a8; border:2px solid rgba(255,255,255,.7)}
+.ticks{display:flex; justify-content:space-between; font-size:.58rem; letter-spacing:.08em; text-transform:uppercase; opacity:.55; margin-top:.35rem}
+.phase-copy{margin-top:.7rem; font-size:.84rem; font-weight:200; line-height:1.55; opacity:.92; min-height:3.9em}
+
+.myth{perspective:900px; margin-bottom:.9rem; cursor:pointer}
+.myth-inner{position:relative; transition:transform .6s; transform-style:preserve-3d; min-height:118px}
+.myth.flip .myth-inner{transform:rotateY(180deg)}
+.face{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border-radius:16px; padding:1.1rem 1.2rem; display:flex; flex-direction:column; justify-content:center}
+.face.front{background:var(--scrim); backdrop-filter:blur(10px); border:1px solid rgba(246,236,228,.18)}
+.face.back{background:var(--paper); color:#5a4a43; transform:rotateY(180deg)}
+.face .q{font-family:'Instrument Serif',serif; font-style:italic; font-size:1.15rem; margin-bottom:.3rem}
+.face .tap{font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; opacity:.6; margin-top:.5rem}
+.face.back p{font-size:.84rem; line-height:1.55}
+.face.back .verdict{font-size:.62rem; letter-spacing:.16em; text-transform:uppercase; color:#b5806f; margin-bottom:.4rem}
+
+.breathe-wrap{display:flex; flex-direction:column; align-items:center; padding:1.5rem 0}
+#borb{width:180px; height:180px; border-radius:50%; border:1.5px solid var(--rose-soft); display:flex; align-items:center; justify-content:center; transition:transform 4s ease-in-out, box-shadow 4s ease-in-out; box-shadow:0 0 30px rgba(232,196,186,.25); margin:1.2rem 0}
+#borb .serif{font-style:italic; font-size:1.2rem}
+.btn{display:inline-block; background:var(--rose); color:#fff; border:none; font-family:inherit; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; padding:1rem 2.1rem; border-radius:6px; cursor:pointer}
+.btn.ghost{background:transparent; border:1px solid rgba(246,236,228,.4); color:var(--ink)}
+
+.cond{display:flex; flex-wrap:wrap; gap:.6rem; justify-content:center; margin-top:1.2rem}
+.cond a{border:1px solid rgba(246,236,228,.35); background:rgba(30,22,20,.35); backdrop-filter:blur(6px); border-radius:24px; padding:.6rem 1.1rem; font-size:.8rem}
+.cond a:active{background:var(--rose)}
+
+.book .panel{text-align:center}
+input[type=email]{width:100%; background:rgba(253,248,242,.95); border:none; border-radius:8px; padding:.9rem 1rem; font-family:inherit; font-size:.9rem; color:#5a4a43; margin:.8rem 0}
+.small{font-size:.68rem; opacity:.6; line-height:1.5; margin-top:.8rem}
+</style>
+</head>
+<body>
+
+<canvas id="sky"></canvas>
+<div class="grain"></div>
+
+<div class="app">
+  <div class="top">The Third Eye · A guide to hypnotherapy</div>
+
+  <div class="screens">
+
+    <section class="screen active" id="s-journey">
+      <svg id="eye" width="130" height="84" viewBox="-75 -48 150 96" aria-hidden="true" style="display:block; margin:0 auto .6rem; overflow:visible">
+        <defs><clipPath id="lidClip"><path id="eyeClip" d="M-52,0 Q0,-36 52,0 Q0,36 -52,0"/></clipPath></defs>
+        <g id="halo" stroke="#e8c4ba" stroke-width="1.1" opacity=".7" fill="none">
+          <path d="M0,-44 L0,-38"/><path d="M32,-33 L28,-28.5"/><path d="M-32,-33 L-28,-28.5"/>
+          <path d="M58,-14 L52,-12"/><path d="M-58,-14 L-52,-12"/>
+        </g>
+        <g clip-path="url(#lidClip)">
+          <ellipse cx="0" cy="0" rx="52" ry="36" fill="#fdf8f2" opacity=".85"/>
+          <circle cx="0" cy="0" r="17" fill="#c48a80"/>
+          <circle cx="0" cy="0" r="17" fill="none" stroke="#8a5f52" stroke-width="1"/>
+          <circle id="pupil" cx="0" cy="0" r="7" fill="#3a2a26"/>
+          <circle cx="5" cy="-5" r="2.4" fill="#fdf8f2" opacity=".9"/>
+        </g>
+        <path id="eyeOutline" d="M-52,0 Q0,-36 52,0 Q0,36 -52,0" fill="none" stroke="#f6ece4" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <h1 class="big serif">How clinical hypnotherapy actually works</h1>
+      <p class="lead">Draw the eye closed to move through a real session with Meera — and gently back. You stay aware and in control the entire time.</p>
+      <div class="panel">
+        <div class="row1">
+          <div class="phase serif" id="phaseName">Pre-talk</div>
+          <div class="hint">drag to go deeper</div>
+        </div>
+        <input type="range" id="alt" min="-20" max="10" step="0.1" value="10" aria-label="Session depth">
+        <div class="ticks"><span>Pre-talk</span><span>Induction</span><span>Deepening</span><span>Suggestion</span></div>
+        <p class="phase-copy" id="phaseCopy">You're wide awake and fully informed. Meera will talk with you about your healing goals, answer every question, and explain exactly what clinical hypnotherapy is — and isn't. This is your safe space.</p>
+      </div>
+    </section>
+
+    <section class="screen" id="s-myths">
+      <div class="eyebrow">Myths &amp; truths</div>
+      <h1 class="big serif">What people fear about clinical hypnotherapy</h1>
+      <p class="lead">Tap a card. Most misconceptions come from stage entertainment, not evidence-based clinical work. Let Meera demystify what's really happening.</p>
+      <div class="myth"><div class="myth-inner">
+        <div class="face front"><div class="q">"I'll lose control."</div><div class="tap">Tap for the truth</div></div>
+        <div class="face back"><div class="verdict">Myth</div><p>You stay fully aware and in control the whole time. Your subconscious mind is always there to protect you — it will never follow any suggestion that conflicts with your values or ethics. Meera is a guide, never a puppeteer.</p></div>
+      </div></div>
+      <div class="myth"><div class="myth-inner">
+        <div class="face front"><div class="q">"I could get stuck in hypnosis."</div><div class="tap">Tap for the truth</div></div>
+        <div class="face back"><div class="verdict">Myth</div><p>Impossible. Clinical hypnotherapy is a natural state of focused attention and heightened suggestibility — like being absorbed in a good book. If Meera stopped speaking, you'd naturally drift back to full alertness on your own. Your mind won't let you stay in a state that feels unsafe.</p></div>
+      </div></div>
+      <div class="myth"><div class="myth-inner">
+        <div class="face front"><div class="q">"Only weak-minded people can be hypnotized."</div><div class="tap">Tap for the truth</div></div>
+        <div class="face back"><div class="verdict">Myth</div><p>The opposite. Clinical hypnotherapy is a skill of focus and imagination — people with strong concentration and creativity often respond best. It's a true collaboration between you and Meera, not something done to you.</p></div>
+      </div></div>
+      <div class="myth"><div class="myth-inner">
+        <div class="face front"><div class="q">"It's just a placebo."</div><div class="tap">Tap for the truth</div></div>
+        <div class="face back"><div class="verdict">Fact</div><p>Clinical hypnotherapy is recognized by major medical bodies worldwide and has decades of research supporting its effectiveness for pain, anxiety, IBS, PTSD, and smoking cessation. Brain imaging shows measurably different neural activity during clinical hypnosis — it's a real, physiological state with documented healing benefits.</p></div>
+      </div></div>
+    </section>
+
+    <section class="screen" id="s-breathe">
+      <div class="eyebrow">Experience it</div>
+      <h1 class="big serif">One minute of focus</h1>
+      <p class="lead">This is how clinical hypnotherapy begins — not sleep, but deep, focused awareness. In your first session, Meera will guide you through this exact doorway to meaningful change.</p>
+      <div class="breathe-wrap">
+        <div id="borb"><span class="serif" id="btext">Ready?</span></div>
+        <button class="btn" id="bstart">Begin</button>
+        <p class="small" style="text-align:center">In the real app, this exercise is guided by Meera's voice — her presence and calm expertise throughout.</p>
+      </div>
+    </section>
+
+    <section class="screen" id="s-help">
+      <div class="eyebrow">Areas of healing</div>
+      <h1 class="big serif">What Meera specializes in</h1>
+      <p class="lead">Clinical hypnotherapy works differently for each person. Tap any area to explore how Meera creates meaningful, lasting change for your specific challenge.</p>
+      <div class="cond">
+        <a href="https://3rdeyehypnotherapy.com/anxiety-stress/">Anxiety &amp; stress</a>
+        <a href="https://3rdeyehypnotherapy.com/trauma/">Trauma &amp; PTSD</a>
+        <a href="https://3rdeyehypnotherapy.com/insomnia/">Insomnia</a>
+        <a href="https://3rdeyehypnotherapy.com/chronic-pain/">Chronic pain</a>
+        <a href="https://3rdeyehypnotherapy.com/phobias/">Phobias</a>
+        <a href="https://3rdeyehypnotherapy.com/smoking-cessation-vaping/">Smoking &amp; vaping</a>
+        <a href="https://3rdeyehypnotherapy.com/grief-loss/">Grief &amp; loss</a>
+        <a href="https://3rdeyehypnotherapy.com/clinical-depression/">Depression</a>
+        <a href="https://3rdeyehypnotherapy.com/working-with-kids/">Kids &amp; teens</a>
+        <a href="https://3rdeyehypnotherapy.com/pre-op-post-op-hypnosis/">Pre &amp; post-op</a>
+        <a href="https://3rdeyehypnotherapy.com/eating-disorders/">Eating disorders</a>
+        <a href="https://3rdeyehypnotherapy.com/adhd/">ADHD</a>
+      </div>
+    </section>
+
+    <section class="screen book" id="s-book">
+      <div class="eyebrow">Your healing journey begins</div>
+      <h1 class="big serif">Ready for meaningful change?</h1>
+      <p class="lead">Meera specializes in evidence-based counselling and clinical hypnotherapy in Calgary — in person or online across Alberta. Your first session is a free, no-pressure conversation about your unique needs and goals.</p>
+      <div class="panel">
+        <p style="font-size:.9rem; margin-bottom:1rem">Book a free consultation with Meera. Talk about what you're navigating, ask any questions, and explore whether clinical hypnotherapy is the right path for your healing journey.</p>
+        <a class="btn" href="https://3rdeyehypnotherapy.com/contact-us/">Book your free consult</a>
+      </div>
+      <div class="panel">
+        <p style="font-size:.9rem">Not quite ready? Meera has recorded a free guided relaxation audio to help you experience the calm focus that clinical hypnotherapy creates.</p>
+        <button class="btn ghost" style="margin-top:.8rem">Get the free audio</button>
+        <p class="small">In the real app, we'll send this to your email. One email, no spam, unsubscribe anytime.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <nav class="tabs">
+    <button class="tab active" data-s="s-journey"><svg viewBox="0 0 24 24"><path d="M2 12 Q12 4 22 12 Q12 20 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>Journey</button>
+    <button class="tab" data-s="s-myths"><svg viewBox="0 0 24 24"><path d="M9 9a3 3 0 1 1 4.5 2.6c-.9.5-1.5 1-1.5 2.4"/><circle cx="12" cy="18" r=".5"/><circle cx="12" cy="12" r="10"/></svg>Myths</button>
+    <button class="tab" data-s="s-breathe"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>Breathe</button>
+    <button class="tab" data-s="s-help"><svg viewBox="0 0 24 24"><path d="M12 21C7 17 3 13.5 3 9.5 3 7 5 5 7.5 5c1.7 0 3.4 1 4.5 2.6C13.1 6 14.8 5 16.5 5 19 5 21 7 21 9.5c0 4-4 7.5-9 11.5Z"/></svg>Help with</button>
+    <button class="tab" data-s="s-book"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>Book</button>
+  </nav>
+</div>
+
+<script>
+const canvas = document.getElementById('sky');
+const gl = canvas.getContext('webgl', {antialias:false});
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const vsrc = `attribute vec2 p; void main(){ gl_Position = vec4(p,0.,1.); }`;
+const fsrc = `
+precision highp float;
+uniform vec2 res; uniform float alt; uniform float t;
+float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
+void main(){
+  vec2 uv = gl_FragCoord.xy / res;
+  float day = smoothstep(-18.0, 8.0, alt);
+  float dusk = 1.0 - abs(clamp(alt/9.0, -1.0, 1.0));
+  vec3 zenith = mix(vec3(0.05,0.04,0.10), vec3(0.55,0.62,0.74), day);
+  vec3 horiz = mix(mix(vec3(0.12,0.07,0.13), vec3(0.98,0.86,0.72), day), vec3(0.94,0.52,0.38), dusk*0.85);
+  float g = pow(1.0 - uv.y, 1.6);
+  vec3 col = mix(zenith, horiz, g);
+  col = mix(col, vec3(0.52,0.34,0.52), dusk * (1.0-g) * 0.35 * (1.0 - day*0.5));
+  float d = distance(vec2(uv.x*res.x/res.y, uv.y), vec2(0.5*res.x/res.y, 0.62));
+  col += mix(vec3(1.0,0.55,0.35), vec3(1.0,0.92,0.78), day) * exp(-d*2.8) * 0.16 * (0.3+dusk*0.7) * smoothstep(-20.0,-2.0,alt);
+  float night = 1.0 - smoothstep(-16.0, -7.0, alt);
+  if(night > 0.01){
+    float h = hash(floor(gl_FragCoord.xy / 2.0));
+    if(h > 0.9975){
+      col += vec3(0.9,0.9,1.0) * night * (0.65+0.35*sin(t*1.7+h*80.0)) * smoothstep(0.35,1.0,uv.y);
+    }
+  }
+  col += (hash(gl_FragCoord.xy) - 0.5) / 255.0 * 2.0;
+  gl_FragColor = vec4(col, 1.0);
+}`;
+function mk(type, src){ const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); return s; }
+const prog = gl.createProgram();
+gl.attachShader(prog, mk(gl.VERTEX_SHADER, vsrc));
+gl.attachShader(prog, mk(gl.FRAGMENT_SHADER, fsrc));
+gl.linkProgram(prog); gl.useProgram(prog);
+gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 3,-1, -1,3]), gl.STATIC_DRAW);
+const loc = gl.getAttribLocation(prog, 'p');
+gl.enableVertexAttribArray(loc);
+gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+const uRes = gl.getUniformLocation(prog,'res'), uAlt = gl.getUniformLocation(prog,'alt'), uT = gl.getUniformLocation(prog,'t');
+
+const slider = document.getElementById('alt');
+const phaseName = document.getElementById('phaseName');
+const phaseCopy = document.getElementById('phaseCopy');
+let target = parseFloat(slider.value), shown = target;
+
+const phases = [
+  {min:2,   name:'Pre-talk',   copy:"You're wide awake and fully informed. Meera talks with you about your healing goals, answers every question, and explains what clinical hypnotherapy is — and isn't."},
+  {min:-1,  name:'Induction',  copy:"Slow, guided breathing and a single point of focus. Your attention narrows gently, outside noise fades — and you stay fully aware the entire time."},
+  {min:-7,  name:'Deepening',  copy:"Imagery like descending a staircase guides you into a deeply focused, receptive state. Profoundly relaxed, yet always in control and able to surface whenever you choose."},
+  {min:-13, name:'Suggestion', copy:"The heart of the work. With your conscious mind quiet, Meera's evidence-based suggestions work directly with your subconscious — where real, lasting change happens."},
+  {min:-99, name:'The subconscious', copy:"The deepest, most receptive state of awareness. This part of your mind — where your patterns and beliefs live — is now fully open and ready for meaningful change."}
+];
+const emergence = {name:'Emergence', copy:"Rising back toward full alertness, step by step. You could have surfaced at any moment — in hypnosis, you are always the one in control."};
+let curPhase = null;
+function updatePhase(a){
+  const rising = (target - shown) > 0.4 && a > -19 && a < 2;
+  let p = rising ? emergence : phases.find(x => a >= x.min) || phases[phases.length-1];
+  if(p !== curPhase){ curPhase = p; phaseName.textContent = p.name; phaseCopy.textContent = p.copy; }
+}
+slider.addEventListener('input', () => { target = parseFloat(slider.value); });
+
+const eyeClip = document.getElementById('eyeClip');
+const eyeOutline = document.getElementById('eyeOutline');
+const pupil = document.getElementById('pupil');
+const halo = document.getElementById('halo');
+function drawEye(a){
+  const o = Math.max(0.03, Math.min(1, (a + 20) / 30));
+  const d = `M-52,0 Q0,${(-36*o).toFixed(1)} 52,0 Q0,${(36*o).toFixed(1)} -52,0`;
+  eyeClip.setAttribute('d', d); eyeOutline.setAttribute('d', d);
+  pupil.setAttribute('r', (5 + 5*(1-o)).toFixed(1));
+  halo.setAttribute('opacity', (0.15 + 0.55*o).toFixed(2));
+}
+
+function resize(){
+  const scale = 0.5 * (window.devicePixelRatio || 1);
+  canvas.width = Math.floor(innerWidth * scale);
+  canvas.height = Math.floor(innerHeight * scale);
+  gl.viewport(0,0,canvas.width,canvas.height);
+}
+addEventListener('resize', resize); resize();
+
+function frame(ms){
+  shown += (target - shown) * (reduced ? 1 : 0.06);
+  gl.uniform2f(uRes, canvas.width, canvas.height);
+  gl.uniform1f(uAlt, shown);
+  gl.uniform1f(uT, reduced ? 0 : ms/1000);
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+  drawEye(shown);
+  updatePhase(shown);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById(t.dataset.s).classList.add('active');
+  document.querySelector('.screens').scrollTop = 0;
+}));
+
+document.querySelectorAll('.myth').forEach(m => m.addEventListener('click', () => m.classList.toggle('flip')));
+
+const borb = document.getElementById('borb');
+const btext = document.getElementById('btext');
+const bstart = document.getElementById('bstart');
+let breathing = false, btimer = [];
+bstart.addEventListener('click', () => {
+  if(breathing){ btimer.forEach(clearTimeout); btimer=[]; breathing=false; bstart.textContent='Begin'; btext.textContent='Ready?'; borb.style.transform='scale(1)'; return; }
+  breathing = true; bstart.textContent = 'Stop';
+  const cycle = (i) => {
+    if(!breathing || i >= 6){ breathing=false; bstart.textContent='Begin'; btext.textContent='Well done.'; borb.style.transform='scale(1)'; return; }
+    btext.textContent = 'Breathe in…'; borb.style.transform = 'scale(1.35)'; borb.style.boxShadow = '0 0 60px rgba(232,196,186,.45)';
+    btimer.push(setTimeout(() => {
+      btext.textContent = 'Hold…';
+      btimer.push(setTimeout(() => {
+        btext.textContent = 'And out…'; borb.style.transform = 'scale(1)'; borb.style.boxShadow = '0 0 30px rgba(232,196,186,.25)';
+        btimer.push(setTimeout(() => cycle(i+1), 4200));
+      }, 2000));
+    }, 4200));
+  };
+  cycle(0);
+});
+</script>
+</body>
+</html>
