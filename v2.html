@@ -285,7 +285,7 @@ function initAudio(){
   const master = audioCtx.createGain(); master.gain.value = 0.9; master.connect(audioCtx.destination);
 
   const water = makeLoopLayer(audioCtx, master, SOUND_SOURCES.water, 0.5);
-  const wind = makeLoopLayer(audioCtx, master, SOUND_SOURCES.wind, 0.18);
+  const wind = makeLoopLayer(audioCtx, master, SOUND_SOURCES.wind, 0.34);
   const birds = makeLoopLayer(audioCtx, master, SOUND_SOURCES.birds, 0.22);
   const crickets = makeLoopLayer(audioCtx, master, SOUND_SOURCES.crickets, 0);
 
@@ -300,14 +300,18 @@ function initAudio(){
   soundOn = true;
 }
 
+let owlHasHootedThisNight = false;
 function maybeTriggerOwl(){
   if(!soundOn || !audioNodes) return;
   const now = performance.now ? performance.now() : Date.now();
-  if(nightFactor > 0.7 && now > owlCooldown){
-    owlCooldown = now + 7000 + Math.random()*8000;
-    if(Math.random() < (nightFactor - 0.6)){
-      try{ audioNodes.owlEl.currentTime = 0; audioNodes.owlEl.play().catch(()=>{}); }catch(e){}
-    }
+  if(nightFactor < 0.35){ owlHasHootedThisNight = false; return; }
+  if(now < owlCooldown) return;
+  const firstHoot = !owlHasHootedThisNight && nightFactor > 0.35;
+  const chance = firstHoot ? 1 : (nightFactor - 0.15);
+  if(Math.random() < chance){
+    owlHasHootedThisNight = true;
+    owlCooldown = now + 5000 + Math.random()*6000;
+    try{ audioNodes.owlEl.currentTime = 0; audioNodes.owlEl.play().catch(()=>{}); }catch(e){}
   }
 }
 
@@ -346,7 +350,7 @@ function frame(){
   if(audioCtx && audioNodes){
     const t = audioCtx.currentTime;
     audioNodes.water.gain.gain.setTargetAtTime(0.42 + p*0.18, t, 0.6);
-    audioNodes.wind.gain.gain.setTargetAtTime(0.18 * (1 - p*0.6), t, 0.6);
+    audioNodes.wind.gain.gain.setTargetAtTime(0.34 * (1 - p*0.45), t, 0.6);
     audioNodes.birds.gain.gain.setTargetAtTime(0.22 * dayFactor, t, 0.6);
     audioNodes.crickets.gain.gain.setTargetAtTime(0.32 * duskFactor, t, 0.6);
     maybeTriggerOwl();
