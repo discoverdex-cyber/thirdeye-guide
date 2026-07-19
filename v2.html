@@ -19,7 +19,11 @@ body{font-family:'Outfit',Helvetica,sans-serif; font-weight:400; color:var(--ink
 a{color:inherit; text-decoration:none}
 .serif{font-family:'Instrument Serif',Georgia,serif; font-weight:400}
 
-.app{position:relative; height:100%; height:100dvh; display:flex; flex-direction:column}
+.app{position:relative; height:100%; height:100dvh; display:flex; flex-direction:column; max-width:560px; margin:0 auto}
+@media(min-width:640px){
+  body{display:flex; justify-content:center; overflow-y:auto}
+  .app{box-shadow:0 0 60px rgba(169,79,79,.14); border-left:1px solid var(--card-line); border-right:1px solid var(--card-line)}
+}
 .screens{flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch}
 .screen{display:none; animation:fade .5s ease; padding:0 1.2rem 1.4rem}
 .screen .inner{max-width:520px; margin:0 auto}
