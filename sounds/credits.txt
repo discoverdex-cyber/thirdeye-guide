@@ -7,9 +7,12 @@ water-lake-dawn.mp3
   License: CC-BY 4.0 (attribution required)
 
 birds-woods.mp3
-  "Small bird singing in the woods.wav" by juskiddink
-  https://freesound.org/people/juskiddink/sounds/102807/
+  "20080528.forest.wind.soft.birds.flac" by dobroide
+  https://freesound.org/people/dobroide/sounds/54746/
   License: CC-BY 4.0 (attribution required)
+  Pine forest ambiance in spring — Blackbird, Serin, Kite, Nightingale, with
+  soft breeze on pine and poplar trees. Chosen as a calmer, softer replacement
+  for the original busier bird recording per Meera's feedback (2026-07-18).
 
 wind-breeze.mp3
   "a gentle breeze, wind 3" by mario1298
@@ -30,5 +33,9 @@ owl-hoot.mp3
 Two files require attribution under CC-BY 4.0. Suggested credit line for the
 app's About/Credits area or footer:
 
-  "Water and bird ambience recordings by juskiddink (freesound.org), used
-   under CC-BY 4.0."
+  "Water and forest ambience recordings by juskiddink and dobroide
+   (freesound.org), used under CC-BY 4.0."
+
+Retired: birds-woods-old-busy.mp3.bak (juskiddink "Small bird singing in the
+woods") — kept locally only, not deployed, in case a livelier option is
+wanted for a future concept.

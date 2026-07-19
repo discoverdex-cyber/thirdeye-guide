@@ -208,7 +208,7 @@ input[type=range]::-moz-range-thumb{width:19px; height:19px; border-radius:50%; 
           <button class="btn ghost" style="margin-top:.8rem">Get the free audio</button>
           <p class="small">In the real app, we'll send this to your email. One email, no spam, unsubscribe anytime.</p>
         </div>
-        <p class="small" style="text-align:center; opacity:.6">Water and bird ambience recordings by juskiddink (freesound.org), used under CC-BY 4.0.</p>
+        <p class="small" style="text-align:center; opacity:.6">Water and forest ambience recordings by juskiddink and dobroide (freesound.org), used under CC-BY 4.0.</p>
       </div>
     </section>
 
@@ -286,7 +286,7 @@ function initAudio(){
 
   const water = makeLoopLayer(audioCtx, master, SOUND_SOURCES.water, 0.5);
   const wind = makeLoopLayer(audioCtx, master, SOUND_SOURCES.wind, 0.18);
-  const birds = makeLoopLayer(audioCtx, master, SOUND_SOURCES.birds, 0.35);
+  const birds = makeLoopLayer(audioCtx, master, SOUND_SOURCES.birds, 0.22);
   const crickets = makeLoopLayer(audioCtx, master, SOUND_SOURCES.crickets, 0);
 
   const owlEl = new Audio(SOUND_SOURCES.owl); owlEl.preload = 'auto';
@@ -347,7 +347,7 @@ function frame(){
     const t = audioCtx.currentTime;
     audioNodes.water.gain.gain.setTargetAtTime(0.42 + p*0.18, t, 0.6);
     audioNodes.wind.gain.gain.setTargetAtTime(0.18 * (1 - p*0.6), t, 0.6);
-    audioNodes.birds.gain.gain.setTargetAtTime(0.35 * dayFactor, t, 0.6);
+    audioNodes.birds.gain.gain.setTargetAtTime(0.22 * dayFactor, t, 0.6);
     audioNodes.crickets.gain.gain.setTargetAtTime(0.32 * duskFactor, t, 0.6);
     maybeTriggerOwl();
   }
