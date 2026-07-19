@@ -48,7 +48,8 @@ p.lead{text-align:center; font-size:.93rem; line-height:1.65; color:var(--ink-so
 .row1{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:.6rem}
 .phase{font-family:'Instrument Serif',serif; font-style:italic; font-size:1.3rem; color:var(--rose)}
 .hint{font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); opacity:.8}
-input[type=range]{width:100%; appearance:none; -webkit-appearance:none; height:26px; background:transparent; cursor:grab; direction:rtl}
+input[type=range]{width:100%; appearance:none; -webkit-appearance:none; height:26px; background:transparent; cursor:grab}
+#alt{direction:rtl}
 input[type=range]::-webkit-slider-runnable-track{height:3px; background:#ffffff; border-radius:3px}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:19px; height:19px; border-radius:50%; background:var(--rose); border:2.5px solid #fff; margin-top:-8px; box-shadow:0 2px 8px rgba(169,79,79,.4)}
 input[type=range]::-moz-range-track{height:3px; background:#ffffff; border-radius:3px}
@@ -58,7 +59,7 @@ input[type=range]::-moz-range-thumb{width:19px; height:19px; border-radius:50%; 
 .phase-copy{margin-top:.75rem; font-size:.86rem; line-height:1.6; color:var(--ink); min-height:4em}
 
 .tabs{display:flex; justify-content:space-around; padding:.6rem .4rem calc(.7rem + env(safe-area-inset-bottom)); background:rgba(249,222,224,.85); backdrop-filter:blur(12px); border-top:1px solid var(--card-line)}
-.tab{background:none; border:none; color:var(--ink-soft); opacity:.75; font-family:inherit; font-size:.6rem; letter-spacing:.08em; text-transform:uppercase; display:flex; flex-direction:column; align-items:center; gap:.3rem; cursor:pointer; padding:.2rem .5rem}
+.tab{background:none; border:none; color:var(--ink-soft); opacity:.75; font-family:inherit; font-size:.56rem; letter-spacing:.06em; text-transform:uppercase; display:flex; flex-direction:column; align-items:center; gap:.3rem; cursor:pointer; padding:.2rem .3rem; flex:1; min-width:0}
 .tab svg{width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round}
 .tab.active{opacity:1; color:var(--rose)}
 
@@ -80,6 +81,13 @@ input[type=range]::-moz-range-thumb{width:19px; height:19px; border-radius:50%; 
 .btn.ghost{background:transparent; border:1px solid var(--rose-soft); color:var(--rose); box-shadow:none}
 
 .cond{display:flex; flex-wrap:wrap; gap:.6rem; justify-content:center; margin-top:1.2rem}
+
+.eft-diagram{position:relative; width:min(220px,60vw); margin:0 auto 1.3rem; aspect-ratio:200/240}
+.eft-diagram svg{width:100%; height:100%; display:block}
+.eft-diagram svg circle.pt{opacity:.35}
+.eft-diagram svg circle.pt.active{opacity:1}
+#eftHand{position:absolute; font-size:1.5rem; transform:translate(-50%,-50%); transition:left .5s ease, top .5s ease; animation:tapPulse 1.1s ease-in-out infinite}
+@keyframes tapPulse{0%,100%{transform:translate(-50%,-50%) scale(1) rotate(-8deg)} 50%{transform:translate(-50%,-58%) scale(1.12) rotate(6deg)}}
 .cond a{border:1px solid var(--card-line); background:#fffdfb; border-radius:24px; padding:.6rem 1.1rem; font-size:.8rem; color:var(--rose-deep)}
 .cond a:active{background:var(--card)}
 
@@ -194,6 +202,32 @@ input[type=range]::-moz-range-thumb{width:19px; height:19px; border-radius:50%; 
       </div>
     </section>
 
+    <section class="screen" id="s-eft">
+      <div class="inner">
+        <div class="eyebrow">EFT tapping</div>
+        <h1 class="big serif">Tap your way to calm</h1>
+        <p class="lead">The Emotional Freedom Technique pairs gentle tapping on specific points with a calming phrase, helping settle the nervous system in minutes. Drag through Chewy's sequence to see how it flows.</p>
+        <div class="eft-diagram">
+          <svg viewBox="0 0 200 240" aria-hidden="true">
+            <ellipse cx="100" cy="205" rx="70" ry="34" fill="#f6e9de"/>
+            <circle cx="100" cy="95" r="62" fill="#f9e2d8"/>
+            <path d="M55,150 Q60,110 70,180" fill="none" stroke="#e3b6a6" stroke-width="3" stroke-linecap="round"/>
+            <path d="M145,150 Q140,110 130,180" fill="none" stroke="#e3b6a6" stroke-width="3" stroke-linecap="round"/>
+            <g id="eftPoints" fill="#c56a6a"></g>
+          </svg>
+          <div id="eftHand">✋</div>
+        </div>
+        <div class="panel">
+          <div class="row1">
+            <div class="phase serif" id="eftName">Karate chop</div>
+            <div class="hint" id="eftStepCount">1 / 9</div>
+          </div>
+          <input type="range" id="eftSlider" min="0" max="8" step="1" value="0" aria-label="Tapping point">
+          <p class="phase-copy" id="eftCopy">Tap the outer edge of your hand while saying: "Even though I feel this way, I deeply and completely accept myself."</p>
+        </div>
+      </div>
+    </section>
+
     <section class="screen book" id="s-book">
       <div class="inner">
         <div class="eyebrow">Your healing journey begins</div>
@@ -218,6 +252,7 @@ input[type=range]::-moz-range-thumb{width:19px; height:19px; border-radius:50%; 
     <button class="tab active" data-s="s-journey"><svg viewBox="0 0 24 24"><path d="M2 12 Q12 4 22 12 Q12 20 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>Journey</button>
     <button class="tab" data-s="s-myths"><svg viewBox="0 0 24 24"><path d="M9 9a3 3 0 1 1 4.5 2.6c-.9.5-1.5 1-1.5 2.4"/><circle cx="12" cy="18" r=".5"/><circle cx="12" cy="12" r="10"/></svg>Myths</button>
     <button class="tab" data-s="s-breathe"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></svg>Breathe</button>
+    <button class="tab" data-s="s-eft"><svg viewBox="0 0 24 24"><path d="M8 13V6.5a1.5 1.5 0 0 1 3 0V12"/><path d="M11 12V5a1.5 1.5 0 0 1 3 0v7"/><path d="M14 12.5V6.5a1.5 1.5 0 0 1 3 0V13"/><path d="M17 8.5a1.5 1.5 0 0 1 3 0V15c0 3.5-2 7-6.5 7-3 0-4.5-1-6-3l-3-4.5c-.5-.8-.2-1.8.6-2.2.7-.4 1.6-.2 2.1.5L9 15"/></svg>Tapping</button>
     <button class="tab" data-s="s-help"><svg viewBox="0 0 24 24"><path d="M12 21C7 17 3 13.5 3 9.5 3 7 5 5 7.5 5c1.7 0 3.4 1 4.5 2.6C13.1 6 14.8 5 16.5 5 19 5 21 7 21 9.5c0 4-4 7.5-9 11.5Z"/></svg>Help with</button>
     <button class="tab" data-s="s-book"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>Book</button>
   </nav>
@@ -373,6 +408,45 @@ document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () =>
 }));
 
 document.querySelectorAll('.myth').forEach(m => m.addEventListener('click', () => m.classList.toggle('flip')));
+
+/* ---- EFT tapping sequence ---- */
+const EFT_POINTS = [
+  { name:'Karate chop', x:22, y:205, copy:'Tap the outer edge of your hand while saying: "Even though I feel this way, I deeply and completely accept myself."' },
+  { name:'Eyebrow',     x:75, y:66,  copy:'Tap the inner edge of your eyebrow, just above the bridge of your nose.' },
+  { name:'Side of eye', x:138,y:88,  copy:'Tap the bone at the outer corner of your eye.' },
+  { name:'Under eye',   x:80, y:104, copy:'Tap gently on the bone just under your eye.' },
+  { name:'Under nose',  x:100,y:122, copy:'Tap the small area between your nose and upper lip.' },
+  { name:'Chin',        x:100,y:142, copy:'Tap the crease between your lower lip and chin.' },
+  { name:'Collarbone',  x:82, y:172, copy:'Tap just below where your collarbone and breastbone meet.' },
+  { name:'Under arm',   x:46, y:185, copy:'Tap the side of your body, about four inches below your armpit.' },
+  { name:'Top of head', x:100,y:36,  copy:'Finish by tapping gently on the crown of your head, taking one slow breath.' },
+];
+const eftSlider = document.getElementById('eftSlider');
+const eftName = document.getElementById('eftName');
+const eftCopy = document.getElementById('eftCopy');
+const eftStepCount = document.getElementById('eftStepCount');
+const eftHand = document.getElementById('eftHand');
+const eftPointsGroup = document.getElementById('eftPoints');
+
+EFT_POINTS.forEach((pt, i) => {
+  const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+  c.setAttribute('cx', pt.x); c.setAttribute('cy', pt.y); c.setAttribute('r', 5);
+  c.classList.add('pt'); c.dataset.i = i;
+  eftPointsGroup.appendChild(c);
+});
+
+function updateEft(){
+  const i = parseInt(eftSlider.value, 10);
+  const pt = EFT_POINTS[i];
+  eftName.textContent = pt.name;
+  eftCopy.textContent = pt.copy;
+  eftStepCount.textContent = `${i+1} / ${EFT_POINTS.length}`;
+  eftHand.style.left = (pt.x/200*100) + '%';
+  eftHand.style.top = (pt.y/240*100) + '%';
+  eftPointsGroup.querySelectorAll('circle').forEach(c => c.classList.toggle('active', parseInt(c.dataset.i,10) === i));
+}
+eftSlider.addEventListener('input', updateEft);
+updateEft();
 
 const borb = document.getElementById('borb');
 const btext = document.getElementById('btext');
