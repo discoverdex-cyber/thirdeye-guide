@@ -2,9 +2,11 @@ Ambient sound credits — The Third Eye app
 All sourced from freesound.org
 
 water-lake-dawn.mp3
-  "Lake ambience at dawn.wav" by juskiddink
-  https://freesound.org/people/juskiddink/sounds/101920/
-  License: CC-BY 4.0 (attribution required)
+  "Water-lap-against-rocks-lake.wav" by salilnair
+  https://freesound.org/people/salilnair/sounds/524688/
+  License: CC0 (no attribution required)
+  Swapped in 2026-07-18 to replace the original "Lake ambience at dawn" track,
+  which had audible bird cries baked into the recording that Meera didn't like.
 
 birds-woods.mp3
   "20080528.forest.wind.soft.birds.flac" by dobroide
@@ -30,12 +32,11 @@ owl-hoot.mp3
   License: CC0 (no attribution required)
 
 ---
-Two files require attribution under CC-BY 4.0. Suggested credit line for the
+One file requires attribution under CC-BY 4.0. Suggested credit line for the
 app's About/Credits area or footer:
 
-  "Water and forest ambience recordings by juskiddink and dobroide
-   (freesound.org), used under CC-BY 4.0."
+  "Forest ambience recording by dobroide (freesound.org), used under CC-BY 4.0."
 
-Retired: birds-woods-old-busy.mp3.bak (juskiddink "Small bird singing in the
-woods") — kept locally only, not deployed, in case a livelier option is
-wanted for a future concept.
+Retired (kept locally only, not deployed):
+  water-lake-dawn-old-birds.mp3.bak — juskiddink "Lake ambience at dawn" (had bird cries)
+  birds-woods-old-busy.mp3.bak — juskiddink "Small bird singing in the woods" (too busy)
