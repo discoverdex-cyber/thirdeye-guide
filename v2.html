@@ -348,10 +348,10 @@ soundBtn.addEventListener('click', () => {
 
 const KF_SPACING = keyframes.length > 1 ? (keyframes[1].p - keyframes[0].p) : 1;
 function applySceneCrossfade(p){
-  keyframes.forEach(kf => {
-    const w = Math.max(0, 1 - Math.abs(p - kf.p) / KF_SPACING);
-    kf.el.style.opacity = w.toFixed(3);
-  });
+  const raw = keyframes.map(kf => Math.max(0, 1 - Math.abs(p - kf.p) / KF_SPACING));
+  const sharp = raw.map(w => w*w*w*(w*(w*6-15)+10));
+  const sum = sharp.reduce((a,b) => a+b, 0) || 1;
+  keyframes.forEach((kf,i) => { kf.el.style.opacity = (sharp[i]/sum).toFixed(3); });
 }
 
 function frame(){
@@ -372,7 +372,11 @@ function frame(){
 
   requestAnimationFrame(frame);
 }
-requestAnimationFrame(frame);
+
+const decodePromises = keyframes.map(kf => kf.el.decode ? kf.el.decode().catch(()=>{}) : Promise.resolve());
+Promise.race([Promise.all(decodePromises), new Promise(r => setTimeout(r, 1200))]).then(() => {
+  requestAnimationFrame(frame);
+});
 
 document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
   document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
