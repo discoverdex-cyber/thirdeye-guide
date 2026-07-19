@@ -208,6 +208,7 @@ input[type=range]::-moz-range-thumb{width:19px; height:19px; border-radius:50%; 
           <button class="btn ghost" style="margin-top:.8rem">Get the free audio</button>
           <p class="small">In the real app, we'll send this to your email. One email, no spam, unsubscribe anytime.</p>
         </div>
+        <p class="small" style="text-align:center; opacity:.6">Water and bird ambience recordings by juskiddink (freesound.org), used under CC-BY 4.0.</p>
       </div>
     </section>
 
@@ -256,92 +257,71 @@ slider.addEventListener('input', () => { target = parseFloat(slider.value); });
 
 function ease(x){ return x*x*(3-2*x); }
 
-/* ---- Ambient soundscape: fully synthesized, no audio files ---- */
+/* ---- Ambient soundscape: real field recordings (CC0 / CC-BY, see credits.txt), mixed live ---- */
 const soundBtn = document.getElementById('soundBtn');
 let audioCtx = null, soundOn = false, audioNodes = null;
 let dayFactor = 1, duskFactor = 0, nightFactor = 0;
+let owlCooldown = 0;
 
-function noiseBuffer(ctx, seconds){
-  const buf = ctx.createBuffer(1, Math.floor(ctx.sampleRate*seconds), ctx.sampleRate);
-  const d = buf.getChannelData(0);
-  for(let i=0;i<d.length;i++) d[i] = Math.random()*2-1;
-  return buf;
-}
+const SOUND_SOURCES = {
+  water:    'sounds/water-lake-dawn.mp3',
+  wind:     'sounds/wind-breeze.mp3',
+  birds:    'sounds/birds-woods.mp3',
+  crickets: 'sounds/crickets-night.mp3',
+  owl:      'sounds/owl-hoot.mp3'
+};
 
-function chirp(ctx, master, f0, f1, dur, peak, type){
-  const t = ctx.currentTime;
-  const osc = ctx.createOscillator(); osc.type = type || 'sine';
-  osc.frequency.setValueAtTime(Math.max(40,f0), t);
-  osc.frequency.exponentialRampToValueAtTime(Math.max(40,f1), t+dur);
-  const g = ctx.createGain();
-  g.gain.setValueAtTime(0.0001, t);
-  g.gain.exponentialRampToValueAtTime(Math.max(0.0005,peak), t+dur*0.3);
-  g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
-  osc.connect(g); g.connect(master);
-  osc.start(t); osc.stop(t+dur+0.05);
-}
-
-function scheduleBird(){
-  const delay = 500 + Math.random()*2200;
-  setTimeout(()=>{
-    if(soundOn && dayFactor > 0.15 && Math.random() < dayFactor){
-      const base = 2200 + Math.random()*1400;
-      chirp(audioCtx, audioNodes.master, base, base*1.35, 0.11+Math.random()*0.08, 0.05*dayFactor, 'triangle');
-      if(Math.random()<0.5) setTimeout(()=>chirp(audioCtx, audioNodes.master, base*1.1, base*0.85, 0.09, 0.04*dayFactor, 'triangle'), 130);
-    }
-    scheduleBird();
-  }, delay);
-}
-function scheduleCricket(){
-  const delay = 130 + Math.random()*110;
-  setTimeout(()=>{
-    if(soundOn && duskFactor > 0.15 && Math.random() < duskFactor*0.85){
-      chirp(audioCtx, audioNodes.master, 4100+Math.random()*500, 3900, 0.055, 0.022*duskFactor, 'square');
-    }
-    scheduleCricket();
-  }, delay);
-}
-function scheduleOwl(){
-  const delay = 4500 + Math.random()*6500;
-  setTimeout(()=>{
-    if(soundOn && nightFactor > 0.65 && Math.random() < (nightFactor-0.55)){
-      chirp(audioCtx, audioNodes.master, 600, 420, 0.5, 0.06, 'sine');
-      setTimeout(()=>chirp(audioCtx, audioNodes.master, 480, 340, 0.6, 0.05, 'sine'), 560);
-    }
-    scheduleOwl();
-  }, delay);
+function makeLoopLayer(ctx, master, src, initialGain){
+  const el = new Audio(src);
+  el.loop = true; el.crossOrigin = 'anonymous'; el.preload = 'auto';
+  const node = ctx.createMediaElementSource(el);
+  const gain = ctx.createGain(); gain.gain.value = initialGain;
+  node.connect(gain); gain.connect(master);
+  return { el, gain };
 }
 
 function initAudio(){
   audioCtx = new (window.AudioContext||window.webkitAudioContext)();
   const master = audioCtx.createGain(); master.gain.value = 0.9; master.connect(audioCtx.destination);
 
-  const waterSrc = audioCtx.createBufferSource();
-  waterSrc.buffer = noiseBuffer(audioCtx, 4); waterSrc.loop = true;
-  const waterFilter = audioCtx.createBiquadFilter(); waterFilter.type='lowpass'; waterFilter.frequency.value=700;
-  const waterLfo = audioCtx.createOscillator(); waterLfo.frequency.value=0.15;
-  const waterLfoGain = audioCtx.createGain(); waterLfoGain.gain.value=150;
-  waterLfo.connect(waterLfoGain); waterLfoGain.connect(waterFilter.frequency);
-  const waterGain = audioCtx.createGain(); waterGain.gain.value=0.15;
-  waterSrc.connect(waterFilter); waterFilter.connect(waterGain); waterGain.connect(master);
-  waterSrc.start(); waterLfo.start();
+  const water = makeLoopLayer(audioCtx, master, SOUND_SOURCES.water, 0.5);
+  const wind = makeLoopLayer(audioCtx, master, SOUND_SOURCES.wind, 0.18);
+  const birds = makeLoopLayer(audioCtx, master, SOUND_SOURCES.birds, 0.35);
+  const crickets = makeLoopLayer(audioCtx, master, SOUND_SOURCES.crickets, 0);
 
-  const windSrc = audioCtx.createBufferSource();
-  windSrc.buffer = noiseBuffer(audioCtx, 4); windSrc.loop = true;
-  const windFilter = audioCtx.createBiquadFilter(); windFilter.type='bandpass'; windFilter.frequency.value=320; windFilter.Q.value=0.6;
-  const windGain = audioCtx.createGain(); windGain.gain.value=0.05;
-  windSrc.connect(windFilter); windFilter.connect(windGain); windGain.connect(master);
-  windSrc.start();
+  const owlEl = new Audio(SOUND_SOURCES.owl); owlEl.preload = 'auto';
+  const owlNode = audioCtx.createMediaElementSource(owlEl);
+  const owlGain = audioCtx.createGain(); owlGain.gain.value = 0.5;
+  owlNode.connect(owlGain); owlGain.connect(master);
 
-  audioNodes = {master, waterGain, windGain};
+  [water.el, wind.el, birds.el, crickets.el].forEach(el => el.play().catch(()=>{}));
+
+  audioNodes = { master, water, wind, birds, crickets, owlEl, owlGain };
   soundOn = true;
-  scheduleBird(); scheduleCricket(); scheduleOwl();
+}
+
+function maybeTriggerOwl(){
+  if(!soundOn || !audioNodes) return;
+  const now = performance.now ? performance.now() : Date.now();
+  if(nightFactor > 0.7 && now > owlCooldown){
+    owlCooldown = now + 7000 + Math.random()*8000;
+    if(Math.random() < (nightFactor - 0.6)){
+      try{ audioNodes.owlEl.currentTime = 0; audioNodes.owlEl.play().catch(()=>{}); }catch(e){}
+    }
+  }
 }
 
 soundBtn.addEventListener('click', () => {
   if(!audioCtx){ initAudio(); }
-  else if(audioCtx.state === 'running'){ audioCtx.suspend(); soundOn = false; }
-  else { audioCtx.resume(); soundOn = true; }
+  else if(audioCtx.state === 'running'){
+    audioCtx.suspend();
+    [audioNodes.water.el, audioNodes.wind.el, audioNodes.birds.el, audioNodes.crickets.el].forEach(el => el.pause());
+    soundOn = false;
+  } else {
+    audioCtx.resume();
+    [audioNodes.water.el, audioNodes.wind.el, audioNodes.birds.el, audioNodes.crickets.el].forEach(el => el.play().catch(()=>{}));
+    soundOn = true;
+  }
   soundBtn.classList.toggle('on', soundOn);
   soundBtn.setAttribute('aria-pressed', String(soundOn));
 });
@@ -361,13 +341,15 @@ function frame(){
   updatePhase(shown);
 
   dayFactor = Math.max(0, 1 - p*1.4);
-  duskFactor = 1 - Math.abs(p - 0.55)*1.8;
-  duskFactor = Math.max(0, Math.min(1, duskFactor));
+  duskFactor = Math.max(0, Math.min(1, (p - 0.4) / 0.3));
   nightFactor = Math.max(0, (p - 0.55) / 0.45);
   if(audioCtx && audioNodes){
     const t = audioCtx.currentTime;
-    audioNodes.waterGain.gain.setTargetAtTime(0.13 + p*0.05, t, 0.6);
-    audioNodes.windGain.gain.setTargetAtTime(0.05 * (1 - p*0.7), t, 0.6);
+    audioNodes.water.gain.gain.setTargetAtTime(0.42 + p*0.18, t, 0.6);
+    audioNodes.wind.gain.gain.setTargetAtTime(0.18 * (1 - p*0.6), t, 0.6);
+    audioNodes.birds.gain.gain.setTargetAtTime(0.35 * dayFactor, t, 0.6);
+    audioNodes.crickets.gain.gain.setTargetAtTime(0.32 * duskFactor, t, 0.6);
+    maybeTriggerOwl();
   }
 
   requestAnimationFrame(frame);

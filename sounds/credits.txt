@@ -1,0 +1,34 @@
+Ambient sound credits — The Third Eye app
+All sourced from freesound.org
+
+water-lake-dawn.mp3
+  "Lake ambience at dawn.wav" by juskiddink
+  https://freesound.org/people/juskiddink/sounds/101920/
+  License: CC-BY 4.0 (attribution required)
+
+birds-woods.mp3
+  "Small bird singing in the woods.wav" by juskiddink
+  https://freesound.org/people/juskiddink/sounds/102807/
+  License: CC-BY 4.0 (attribution required)
+
+wind-breeze.mp3
+  "a gentle breeze, wind 3" by mario1298
+  https://freesound.org/people/mario1298/sounds/181252/
+  License: CC0 (no attribution required)
+
+crickets-night.mp3
+  "AMBIENCE NIGHT FIELD CRICKET 01.wav" by sengjinn
+  https://freesound.org/people/sengjinn/sounds/175020/
+  License: CC0 (no attribution required)
+
+owl-hoot.mp3
+  "Owl Hoot" by Breviceps
+  https://freesound.org/people/Breviceps/sounds/465697/
+  License: CC0 (no attribution required)
+
+---
+Two files require attribution under CC-BY 4.0. Suggested credit line for the
+app's About/Credits area or footer:
+
+  "Water and bird ambience recordings by juskiddink (freesound.org), used
+   under CC-BY 4.0."
