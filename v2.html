@@ -82,12 +82,9 @@ input[type=range]::-moz-range-thumb{width:19px; height:19px; border-radius:50%; 
 
 .cond{display:flex; flex-wrap:wrap; gap:.6rem; justify-content:center; margin-top:1.2rem}
 
-.eft-diagram{position:relative; width:min(220px,60vw); margin:0 auto 1.3rem; aspect-ratio:200/240}
-.eft-diagram svg{width:100%; height:100%; display:block}
-.eft-diagram svg circle.pt{opacity:.35}
-.eft-diagram svg circle.pt.active{opacity:1}
-#eftHand{position:absolute; font-size:1.5rem; transform:translate(-50%,-50%); transition:left .5s ease, top .5s ease; animation:tapPulse 1.1s ease-in-out infinite}
-@keyframes tapPulse{0%,100%{transform:translate(-50%,-50%) scale(1) rotate(-8deg)} 50%{transform:translate(-50%,-58%) scale(1.12) rotate(6deg)}}
+.eft-hero{margin-bottom:0}
+.eft-kf{opacity:0; transition:opacity .45s ease; object-position:50% 22% !important}
+.eft-kf.active{opacity:1}
 .cond a{border:1px solid var(--card-line); background:#fffdfb; border-radius:24px; padding:.6rem 1.1rem; font-size:.8rem; color:var(--rose-deep)}
 .cond a:active{background:var(--card)}
 
@@ -207,15 +204,16 @@ input[type=range]::-moz-range-thumb{width:19px; height:19px; border-radius:50%; 
         <div class="eyebrow">EFT tapping</div>
         <h1 class="big serif">Tap your way to calm</h1>
         <p class="lead">The Emotional Freedom Technique pairs gentle tapping on specific points with a calming phrase, helping settle the nervous system in minutes. Drag through Chewy's sequence to see how it flows.</p>
-        <div class="eft-diagram">
-          <svg viewBox="0 0 200 240" aria-hidden="true">
-            <ellipse cx="100" cy="205" rx="70" ry="34" fill="#f6e9de"/>
-            <circle cx="100" cy="95" r="62" fill="#f9e2d8"/>
-            <path d="M55,150 Q60,110 70,180" fill="none" stroke="#e3b6a6" stroke-width="3" stroke-linecap="round"/>
-            <path d="M145,150 Q140,110 130,180" fill="none" stroke="#e3b6a6" stroke-width="3" stroke-linecap="round"/>
-            <g id="eftPoints" fill="#c56a6a"></g>
-          </svg>
-          <div id="eftHand">✋</div>
+        <div class="hero eft-hero">
+          <img class="eft-kf" data-i="0" src="assets/eft/01-side-of-hand.jpg" alt="Chewy the hedgehog tapping the side of his hand">
+          <img class="eft-kf" data-i="1" src="assets/eft/02-eyebrow.jpg" alt="Chewy tapping his eyebrow">
+          <img class="eft-kf" data-i="2" src="assets/eft/03-side-of-eye.jpg" alt="Chewy tapping the side of his eye">
+          <img class="eft-kf" data-i="3" src="assets/eft/04-under-eye.jpg" alt="Chewy tapping under his eye">
+          <img class="eft-kf" data-i="4" src="assets/eft/05-under-nose.jpg" alt="Chewy tapping under his nose">
+          <img class="eft-kf" data-i="5" src="assets/eft/06-chin.jpg" alt="Chewy tapping his chin">
+          <img class="eft-kf" data-i="6" src="assets/eft/07-collarbone.jpg" alt="Chewy tapping his collarbone">
+          <img class="eft-kf" data-i="7" src="assets/eft/08-under-arm.jpg" alt="Chewy tapping under his arm">
+          <img class="eft-kf" data-i="8" src="assets/eft/09-top-of-head.jpg" alt="Chewy tapping the top of his head">
         </div>
         <div class="panel">
           <div class="row1">
@@ -411,29 +409,21 @@ document.querySelectorAll('.myth').forEach(m => m.addEventListener('click', () =
 
 /* ---- EFT tapping sequence ---- */
 const EFT_POINTS = [
-  { name:'Karate chop', x:22, y:205, copy:'Tap the outer edge of your hand while saying: "Even though I feel this way, I deeply and completely accept myself."' },
-  { name:'Eyebrow',     x:75, y:66,  copy:'Tap the inner edge of your eyebrow, just above the bridge of your nose.' },
-  { name:'Side of eye', x:138,y:88,  copy:'Tap the bone at the outer corner of your eye.' },
-  { name:'Under eye',   x:80, y:104, copy:'Tap gently on the bone just under your eye.' },
-  { name:'Under nose',  x:100,y:122, copy:'Tap the small area between your nose and upper lip.' },
-  { name:'Chin',        x:100,y:142, copy:'Tap the crease between your lower lip and chin.' },
-  { name:'Collarbone',  x:82, y:172, copy:'Tap just below where your collarbone and breastbone meet.' },
-  { name:'Under arm',   x:46, y:185, copy:'Tap the side of your body, about four inches below your armpit.' },
-  { name:'Top of head', x:100,y:36,  copy:'Finish by tapping gently on the crown of your head, taking one slow breath.' },
+  { name:'Karate chop', copy:'Tap the outer edge of your hand while saying: "Even though I feel this way, I deeply and completely accept myself."' },
+  { name:'Eyebrow',     copy:'Tap the inner edge of your eyebrow, just above the bridge of your nose.' },
+  { name:'Side of eye', copy:'Tap the bone at the outer corner of your eye.' },
+  { name:'Under eye',   copy:'Tap gently on the bone just under your eye.' },
+  { name:'Under nose',  copy:'Tap the small area between your nose and upper lip.' },
+  { name:'Chin',        copy:'Tap the crease between your lower lip and chin.' },
+  { name:'Collarbone',  copy:'Tap just below where your collarbone and breastbone meet.' },
+  { name:'Under arm',   copy:'Tap the side of your body, about four inches below your armpit.' },
+  { name:'Top of head', copy:'Finish by tapping gently on the crown of your head, taking one slow breath.' },
 ];
 const eftSlider = document.getElementById('eftSlider');
 const eftName = document.getElementById('eftName');
 const eftCopy = document.getElementById('eftCopy');
 const eftStepCount = document.getElementById('eftStepCount');
-const eftHand = document.getElementById('eftHand');
-const eftPointsGroup = document.getElementById('eftPoints');
-
-EFT_POINTS.forEach((pt, i) => {
-  const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
-  c.setAttribute('cx', pt.x); c.setAttribute('cy', pt.y); c.setAttribute('r', 5);
-  c.classList.add('pt'); c.dataset.i = i;
-  eftPointsGroup.appendChild(c);
-});
+const eftFrames = Array.from(document.querySelectorAll('.eft-kf'));
 
 function updateEft(){
   const i = parseInt(eftSlider.value, 10);
@@ -441,11 +431,11 @@ function updateEft(){
   eftName.textContent = pt.name;
   eftCopy.textContent = pt.copy;
   eftStepCount.textContent = `${i+1} / ${EFT_POINTS.length}`;
-  eftHand.style.left = (pt.x/200*100) + '%';
-  eftHand.style.top = (pt.y/240*100) + '%';
-  eftPointsGroup.querySelectorAll('circle').forEach(c => c.classList.toggle('active', parseInt(c.dataset.i,10) === i));
+  eftFrames.forEach(f => f.classList.toggle('active', parseInt(f.dataset.i,10) === i));
 }
 eftSlider.addEventListener('input', updateEft);
+const eftDecodes = eftFrames.map(f => f.decode ? f.decode().catch(()=>{}) : Promise.resolve());
+Promise.race([Promise.all(eftDecodes), new Promise(r => setTimeout(r, 1200))]).then(updateEft);
 updateEft();
 
 const borb = document.getElementById('borb');
