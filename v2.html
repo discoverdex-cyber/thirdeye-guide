@@ -38,8 +38,8 @@ a{color:inherit; text-decoration:none}
 
 .dfly{display:flex; justify-content:center; margin:-1.6rem auto .9rem; position:relative; z-index:2}
 
-#soundBtn{position:absolute; top:.9rem; right:.9rem; z-index:3; width:38px; height:38px; border-radius:50%; border:none; background:rgba(255,255,255,.35); backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; cursor:pointer}
-#soundBtn svg{width:19px; height:19px; stroke:#fff; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))}
+#soundBtn{position:absolute; top:.9rem; right:.9rem; z-index:20; width:42px; height:42px; border-radius:50%; border:none; background:var(--rose); box-shadow:0 3px 12px rgba(169,79,79,.4); display:flex; align-items:center; justify-content:center; cursor:pointer}
+#soundBtn svg{width:20px; height:20px; stroke:#fff; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
 #soundBtn .waves{display:none}
 #soundBtn.on .waves{display:block}
 #soundBtn.on .off-slash{display:none}
@@ -47,6 +47,7 @@ a{color:inherit; text-decoration:none}
 h1.big{font-size:clamp(1.8rem,6.6vw,2.4rem); font-style:italic; line-height:1.15; text-align:center; margin:0 0 .8rem; color:var(--rose)}
 p.lead{text-align:center; font-size:.93rem; line-height:1.65; color:var(--ink-soft); max-width:42ch; margin:0 auto 1.3rem}
 .eyebrow{font-size:.66rem; letter-spacing:.26em; text-transform:uppercase; color:var(--rose-soft); text-align:center; margin:1.6rem 0 .8rem}
+.screen:not(#s-journey) .inner > .eyebrow:first-child{margin-top:3.4rem}
 
 .panel{background:var(--card); border:1px solid var(--card-line); border-radius:20px; padding:1.15rem 1.3rem 1.25rem; margin-bottom:1rem; box-shadow:0 6px 24px rgba(197,106,106,.08)}
 .row1{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:.6rem}
@@ -100,6 +101,13 @@ input[type=range]::-moz-range-thumb{width:19px; height:19px; border-radius:50%; 
 <body>
 
 <div class="app">
+  <button id="soundBtn" aria-label="Toggle ambient sound" aria-pressed="false">
+    <svg viewBox="0 0 24 24">
+      <path d="M4 9v6h4l5 4V5L8 9H4Z"/>
+      <path class="waves" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/>
+      <path class="off-slash" d="M17 8 L22 16 M22 8 L17 16"/>
+    </svg>
+  </button>
   <div class="screens">
 
     <section class="screen active" id="s-journey">
@@ -109,13 +117,6 @@ input[type=range]::-moz-range-thumb{width:19px; height:19px; border-radius:50%; 
         <img class="kf" data-p="0.5"  src="assets/chewy-3-sunset.jpg" alt="" aria-hidden="true">
         <img class="kf" data-p="0.75" src="assets/chewy-4-dusk.jpg"   alt="" aria-hidden="true">
         <img class="kf" data-p="1"    src="assets/chewy-5-night.jpg"  alt="" aria-hidden="true">
-        <button id="soundBtn" aria-label="Toggle ambient sound" aria-pressed="false">
-          <svg viewBox="0 0 24 24">
-            <path d="M4 9v6h4l5 4V5L8 9H4Z"/>
-            <path class="waves" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/>
-            <path class="off-slash" d="M17 8 L22 16 M22 8 L17 16"/>
-          </svg>
-        </button>
       </div>
       <div class="dfly">
         <svg width="96" height="52" viewBox="-48 -26 96 52" aria-hidden="true">
