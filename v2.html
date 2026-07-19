@@ -82,9 +82,10 @@ input[type=range]::-moz-range-thumb{width:19px; height:19px; border-radius:50%; 
 
 .cond{display:flex; flex-wrap:wrap; gap:.6rem; justify-content:center; margin-top:1.2rem}
 
-.eft-hero{margin-bottom:0}
-.eft-kf{opacity:0; transition:opacity .45s ease; object-position:50% 22% !important}
+.eft-hero{margin-bottom:0; height:62vh; min-height:420px; max-height:680px}
+.eft-kf{opacity:0; transition:opacity .45s ease; object-position:50% 18% !important}
 .eft-kf.active{opacity:1}
+@media(max-height:700px){ .eft-hero{height:52vh; min-height:360px} }
 .cond a{border:1px solid var(--card-line); background:#fffdfb; border-radius:24px; padding:.6rem 1.1rem; font-size:.8rem; color:var(--rose-deep)}
 .cond a:active{background:var(--card)}
 
